@@ -7,6 +7,7 @@ let navView
 let contentView
 
 function createWindow () {
+  /*
   win = new BrowserWindow({
     width: 400,
     height: 300,
@@ -18,6 +19,7 @@ function createWindow () {
   })
 
   win.loadFile('index.html')
+  */
 
   udemyWin = new BaseWindow({
     width: 1200,
@@ -74,6 +76,30 @@ ipcMain.on('browser-back', () => contentView.webContents.goBack())
 ipcMain.on('browser-forward', () => contentView.webContents.goForward())
 ipcMain.on('browser-reload', () => contentView.webContents.reload())
 ipcMain.on('browser-load-url', (event, url) => contentView.webContents.loadURL(url))
+
+ipcMain.on('open-control-panel', () => {
+  if (win && !win.isDestroyed()) {
+    win.show()
+    win.focus()
+  } else {
+    win = new BrowserWindow({
+      width: 400,
+      height: 300,
+      title: 'EasyQuizz Udemy Control',
+      webPreferences: {
+        preload: path.join(__dirname, 'preload.js'),
+        contextIsolation: true,
+        nodeIntegration: false
+      }
+    })
+    win.loadFile('index.html')
+    
+    // Đảm bảo khi đóng cửa sổ win sẽ được giải phóng
+    win.on('closed', () => {
+      win = null
+    })
+  }
+})
 
 ipcMain.on('toggle-skip', (event, enabled) => {
   if (contentView) {

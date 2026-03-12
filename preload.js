@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('browserAPI', {
   goForward: () => ipcRenderer.send('browser-forward'),
   reload: () => ipcRenderer.send('browser-reload'),
   loadURL: (url) => ipcRenderer.send('browser-load-url', url),
+  openControl: () => ipcRenderer.send('open-control-panel'),
   onURLChanged: (callback) => ipcRenderer.on('url-changed', (_event, url) => callback(url)),
   onNavStateChanged: (callback) => ipcRenderer.on('nav-state-changed', (_event, state) => callback(state))
 })
