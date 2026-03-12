@@ -6,7 +6,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="bg-gray-100 h-screen flex flex-col items-center justify-center">
-    <div class="bg-white p-8 rounded-lg shadow-md border-t-4 border-blue-500 w-full max-w-md">
+    <!-- Khu vực để kéo cửa sổ khi ẩn frame -->
+    <div style="-webkit-app-region: drag;" class="fixed top-0 left-0 right-0 h-8"></div>
+    
+    <div class="bg-white p-8 rounded-lg shadow-md border-t-4 border-blue-500 w-full max-w-md relative">
+      <!-- Nút đóng cửa sổ cho UI custom -->
+      <button onclick="window.close()" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 no-drag" style="-webkit-app-region: no-drag;">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
       <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">EasyQuizz Udemy Control</h1>
       
       <div class="space-y-4">
@@ -52,6 +60,21 @@
         quizStatusText.innerText = enabled ? 'Enabled' : 'Disabled';
         quizStatusText.className = enabled ? 'font-semibold text-green-500' : 'font-semibold text-red-500';
       });
+
+      // Khôi phục trạng thái từ main process
+      if (window.electronAPI.onRestoreStatus) {
+        window.electronAPI.onRestoreStatus((status) => {
+          if (status) {
+            toggle.checked = status.skipEnabled;
+            statusText.innerText = status.skipEnabled ? 'Enabled' : 'Disabled';
+            statusText.className = status.skipEnabled ? 'font-semibold text-green-500' : 'font-semibold text-red-500';
+
+            quizToggle.checked = status.quizEnabled;
+            quizStatusText.innerText = status.quizEnabled ? 'Enabled' : 'Disabled';
+            quizStatusText.className = status.quizEnabled ? 'font-semibold text-green-500' : 'font-semibold text-red-500';
+          }
+        });
+      }
     </script>
   </body>
 </html>

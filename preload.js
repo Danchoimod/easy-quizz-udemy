@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   toggleQuiz: (enabled) => ipcRenderer.send('toggle-quiz', enabled),
   onSetSkipEnabled: (callback) => ipcRenderer.on('set-skip-enabled', (_event, value) => callback(value)),
   onSetQuizEnabled: (callback) => ipcRenderer.on('set-quiz-enabled', (_event, value) => callback(value)),
+  onRestoreStatus: (callback) => ipcRenderer.on('restore-status', (_event, status) => callback(status)),
   openQuizResult: (url) => ipcRenderer.send('open-quiz-result', url)
 })
 

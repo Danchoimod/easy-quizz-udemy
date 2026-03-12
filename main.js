@@ -24,7 +24,9 @@ function createWindow () {
   udemyWin = new BaseWindow({
     width: 1200,
     height: 800,
+    autoHideMenuBar: true
   })
+  udemyWin.setMenuBarVisibility(false)
 
   // View cho thanh địa chỉ (Navbar)
   navView = new WebContentsView({
@@ -84,6 +86,9 @@ ipcMain.on('browser-forward', () => contentView.webContents.goForward())
 ipcMain.on('browser-reload', () => contentView.webContents.reload())
 ipcMain.on('browser-load-url', (event, url) => contentView.webContents.loadURL(url))
 
+let skipEnabledGlobal = false
+let quizEnabledGlobal = false
+
 ipcMain.on('open-control-panel', () => {
   if (win && !win.isDestroyed()) {
     win.show()
@@ -93,6 +98,8 @@ ipcMain.on('open-control-panel', () => {
       width: 400,
       height: 300,
       title: 'EasyQuizz Udemy Control',
+      frame: false,
+      titleBarStyle: 'hidden',
       webPreferences: {
         preload: path.join(__dirname, 'preload.js'),
         contextIsolation: true,
@@ -100,6 +107,13 @@ ipcMain.on('open-control-panel', () => {
       }
     })
     win.loadFile('index.html')
+
+    win.webContents.on('did-finish-load', () => {
+      win.webContents.send('restore-status', { 
+        skipEnabled: skipEnabledGlobal, 
+        quizEnabled: quizEnabledGlobal 
+      })
+    })
     
     // Đảm bảo khi đóng cửa sổ win sẽ được giải phóng
     win.on('closed', () => {
@@ -109,12 +123,14 @@ ipcMain.on('open-control-panel', () => {
 })
 
 ipcMain.on('toggle-skip', (event, enabled) => {
+  skipEnabledGlobal = enabled
   if (contentView) {
     contentView.webContents.send('set-skip-enabled', enabled)
   }
 })
 
 ipcMain.on('toggle-quiz', (event, enabled) => {
+  quizEnabledGlobal = enabled
   if (contentView) {
     contentView.webContents.send('set-quiz-enabled', enabled)
   }
