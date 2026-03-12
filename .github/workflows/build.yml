@@ -3,7 +3,10 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*' # Trigger build khi push tag có dạng v1.0.0
+      - 'v*'
+
+permissions:
+  contents: write # Cấp quyền ghi để tạo Release và upload file
 
 jobs:
   build:
