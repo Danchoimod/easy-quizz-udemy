@@ -120,12 +120,6 @@ ipcMain.on('toggle-quiz', (event, enabled) => {
   }
 })
 
-ipcMain.on('toggle-auto-solve', (event, enabled) => {
-  if (contentView) {
-    contentView.webContents.send('set-auto-solve-enabled', enabled)
-  }
-})
-
 ipcMain.on('open-quiz-result', (event, url) => {
   // Cửa sổ này đã bị xóa theo yêu cầu
 })

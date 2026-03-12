@@ -3,10 +3,8 @@ const { contextBridge, ipcRenderer } = require('electron')
 contextBridge.exposeInMainWorld('electronAPI', {
   toggleSkip: (enabled) => ipcRenderer.send('toggle-skip', enabled),
   toggleQuiz: (enabled) => ipcRenderer.send('toggle-quiz', enabled),
-  toggleAutoSolve: (enabled) => ipcRenderer.send('toggle-auto-solve', enabled),
   onSetSkipEnabled: (callback) => ipcRenderer.on('set-skip-enabled', (_event, value) => callback(value)),
   onSetQuizEnabled: (callback) => ipcRenderer.on('set-quiz-enabled', (_event, value) => callback(value)),
-  onSetAutoSolveEnabled: (callback) => ipcRenderer.on('set-auto-solve-enabled', (_event, value) => callback(value)),
   openQuizResult: (url) => ipcRenderer.send('open-quiz-result', url)
 })
 
@@ -27,7 +25,6 @@ window.addEventListener('DOMContentLoaded', () => {
     console.log('Udemy page detected, logic running...')
     let skipEnabled = false
     let quizEnabled = false
-    let autoSolveEnabled = false
     let lastQuizUrl = ''
     let cachedQuizData = null         // Lưu dữ liệu API
     let lastAnsweredQuestionId = null // Tránh trả lời lại câu đã answered
@@ -40,15 +37,7 @@ window.addEventListener('DOMContentLoaded', () => {
     ipcRenderer.on('set-quiz-enabled', (_event, enabled) => {
       quizEnabled = enabled
       console.log('Quiz enabled status changed:', quizEnabled)
-      if (!enabled) {
-        cachedQuizData = null
-        autoSolveEnabled = false
-      }
-    })
-
-    ipcRenderer.on('set-auto-solve-enabled', (_event, enabled) => {
-      autoSolveEnabled = enabled
-      console.log('Auto solve enabled status changed:', autoSolveEnabled)
+      if (!enabled) cachedQuizData = null
     })
 
     const fetchAllQuizPages = async (quizId) => {
@@ -70,7 +59,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Tự động chọn đáp án đúng và nhấn Next
     const autoAnswerQuiz = () => {
-      if (!quizEnabled || !cachedQuizData || !autoSolveEnabled) return
+      if (!quizEnabled || !cachedQuizData) return
 
       // Bước 1: Nhấn nút "Bắt đầu làm trắc nghiệm" nếu chưa bắt đầu
       const startBtn = document.querySelector('button[data-purpose="start-or-resume-quiz"]')
