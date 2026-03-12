@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello Electron + Tailwind!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 h-screen flex flex-col items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-md border-t-4 border-blue-500 w-full max-w-md">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">EasyQuizz Udemy Control</h1>
+      
+      <div class="space-y-4">
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <span class="text-gray-700 font-medium">Auto-Skip Video</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="skipToggle" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <span class="text-gray-700 font-medium">Auto-Show Quiz Answer</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="quizToggle" class="sr-only peer">
+            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+      </div>
+
+      <p class="text-xs text-center text-gray-500 mt-6">
+        Skip Status: <span id="statusText" class="font-semibold text-red-500">Disabled</span> | 
+        Quiz Status: <span id="quizStatusText" class="font-semibold text-red-500">Disabled</span>
+      </p>
+    </div>
+
+    <script>
+      const toggle = document.getElementById('skipToggle');
+      const statusText = document.getElementById('statusText');
+      const quizToggle = document.getElementById('quizToggle');
+      const quizStatusText = document.getElementById('quizStatusText');
+
+      toggle.addEventListener('change', (e) => {
+        const enabled = e.target.checked;
+        window.electronAPI.toggleSkip(enabled);
+        statusText.innerText = enabled ? 'Enabled' : 'Disabled';
+        statusText.className = enabled ? 'font-semibold text-green-500' : 'font-semibold text-red-500';
+      });
+
+      quizToggle.addEventListener('change', (e) => {
+        const enabled = e.target.checked;
+        window.electronAPI.toggleQuiz(enabled);
+        quizStatusText.innerText = enabled ? 'Enabled' : 'Disabled';
+        quizStatusText.className = enabled ? 'font-semibold text-green-500' : 'font-semibold text-red-500';
+      });
+    </script>
+  </body>
+</html>

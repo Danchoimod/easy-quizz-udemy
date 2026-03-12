@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        -webkit-app-region: drag;
+        .no-drag { -webkit-app-region: no-drag; }
+    </style>
+</head>
+<body class="bg-[#f1f3f4] flex items-center p-2 border-b border-gray-300">
+    <div class="flex items-center space-x-1 pr-2 no-drag">
+        <button id="backBtn" class="p-1.5 hover:bg-gray-200 rounded-full text-gray-600 disabled:text-gray-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button id="forwardBtn" class="p-1.5 hover:bg-gray-200 rounded-full text-gray-600 disabled:text-gray-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
+        <button id="reloadBtn" class="p-1.5 hover:bg-gray-200 rounded-full text-gray-600">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+    </div>
+    
+    <div class="flex-grow no-drag">
+        <div class="relative flex items-center">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </div>
+            <input type="text" id="urlInput" 
+                class="w-full bg-white border-0 ring-1 ring-gray-300 rounded-full py-1.5 pl-9 pr-4 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm"
+                placeholder="https://fpl.udemy.com">
+        </div>
+    </div>
+
+    <script>
+        const backBtn = document.getElementById('backBtn');
+        const forwardBtn = document.getElementById('forwardBtn');
+        const reloadBtn = document.getElementById('reloadBtn');
+        const urlInput = document.getElementById('urlInput');
+
+        backBtn.onclick = () => window.browserAPI.goBack();
+        forwardBtn.onclick = () => window.browserAPI.goForward();
+        reloadBtn.onclick = () => window.browserAPI.reload();
+
+        urlInput.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                let url = urlInput.value.trim();
+                if (!url.startsWith('http')) url = 'https://' + url;
+                window.browserAPI.loadURL(url);
+            }
+        };
+
+        window.browserAPI.onURLChanged((url) => {
+            urlInput.value = url;
+        });
+
+        window.browserAPI.onNavStateChanged((state) => {
+            backBtn.disabled = !state.canGoBack;
+            forwardBtn.disabled = !state.canGoForward;
+        });
+    </script>
+</body>
+</html>
