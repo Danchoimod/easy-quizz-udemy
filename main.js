@@ -57,6 +57,13 @@ function createWindow () {
   udemyWin.on('resize', updateLayout)
   updateLayout()
 
+  // Tắt cửa sổ Control khi browser chính đóng
+  udemyWin.on('closed', () => {
+    if (win && !win.isDestroyed()) {
+      win.close()
+    }
+  })
+
   // Đồng bộ URL và trạng thái điều hướng
   contentView.webContents.on('did-navigate', (event, url) => {
     navView.webContents.send('url-changed', url)
